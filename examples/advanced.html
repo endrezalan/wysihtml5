@@ -52,6 +52,11 @@
     font-family: Verdana;
     font-size: 11px;
   }
+
+  textarea.text{
+    width:827px;
+    height:80px;
+  }
   
   textarea:focus {
     color: black;
@@ -106,7 +111,7 @@
       </label>
       <a data-wysihtml5-dialog-action="save">OK</a>&nbsp;<a data-wysihtml5-dialog-action="cancel">Cancel</a>
     </div>
-    
+    <!-- Insert image dialog -->
     <div data-wysihtml5-dialog="insertImage" style="display: none;">
       <label>
         Image:
@@ -122,7 +127,6 @@
       </label>
       <a data-wysihtml5-dialog-action="save">OK</a>&nbsp;<a data-wysihtml5-dialog-action="cancel">Cancel</a>
     </div>
-    
   </div>
   <textarea id="textarea" placeholder="Enter text ..."></textarea>
   <br><input type="reset" value="Reset form!">
@@ -154,12 +158,21 @@
     .on("blur", function() {
       log.innerHTML += "<div>blur</div>";
     })
-    .on("change", function() {
-      log.innerHTML += "<div>change</div>";
+    .on("change:composer", function() {
+      log.innerHTML += "<div>change rich view</div>";
     })
-    .on("paste", function() {
-      log.innerHTML += "<div>paste</div>";
+    .on("change:textarea", function() {
+      log.innerHTML += "<div>change source view</div>";
+    })    
+    .on("paste:composer", function() {
+      log.innerHTML += "<div>paste rich view</div>";
     })
+    .on("paste:textarea", function() {
+      log.innerHTML += "<div>paste source view</div>";
+    })    
+    .on("destroy:composer", function() {
+      log.innerHTML += "<div>destroy</div>";
+    })     
     .on("newword:composer", function() {
       log.innerHTML += "<div>newword:composer</div>";
     })
@@ -169,4 +182,9 @@
     .on("redo:composer", function() {
       log.innerHTML += "<div>redo:composer</div>";
     });
+
+
+
+
+
 </script>
