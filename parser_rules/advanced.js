@@ -177,7 +177,7 @@ var wysihtml5ParserRules = {
                 "height":"numbers"                
             },
             "set_attributes":{
-                "frameborder":"0"
+                "frameborder":"0"                
             }
 
         },

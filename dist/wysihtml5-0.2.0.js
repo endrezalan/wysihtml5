@@ -245,7 +245,6 @@ window['rangy'] = (function() {
         this.initialized = false;
         this.supported = false;
     }
-
     Module.prototype.fail = function(reason) {
         this.initialized = true;
         this.supported = false;
@@ -5997,6 +5996,14 @@ wysihtml5.quirks.cleanPastedHTML = (function() {
     },
 
     /**
+     * Split embed object
+     */
+    getVideoObject: function(code) {
+      var videoObject;
+      return videoObject;
+    },
+
+    /**
      * Get the node which contains the selection
      *
      * @param {Object} document Document object of the context where to select
@@ -6299,7 +6306,7 @@ wysihtml5.quirks.cleanPastedHTML = (function() {
           win       = doc.defaultView || doc.parentWindow,
           selection = rangy.getSelection(win);
       return selection.setSingleRange(range);
-    }
+    }    
   };
   
 })(wysihtml5);
@@ -8769,7 +8776,7 @@ wysihtml5.commands = {
           parent.parentNode.removeChild(parent);
         }
 
-        // firefox and ie sometimes don't remove the image handles, even though the image got removed
+        // firefox and ie sometimes don't remove the video handles, even though the image got removed
         wysihtml5.quirks.redraw(element);
         return;
       }
@@ -8851,14 +8858,14 @@ wysihtml5.commands = {
      */
     exec: function(element, command, value) {
       value = typeof(value) === "object" ? value : { src: value };
-
+ // valueObject { src="http://player.vimeo.com...portrait=0&color=ff9933",  width="400",  height="225"}
       var doc   = element.ownerDocument,
           video = this.state(element),
           i,
           parent;
 
       if (video) {
-        // Image already selected, set the caret before it and delete it
+        // Video already selected, set the caret before it and delete it
         wysihtml5.selection.setBefore(video);
         parent = video.parentNode;
         parent.removeChild(video);
@@ -8933,6 +8940,51 @@ wysihtml5.commands = {
   };
 })(wysihtml5);
 
+
+/**
+    Insert Embed video
+**/
+(function(wysihtml5) {
+  var NODE_NAME = "IFRAME";
+  
+  wysihtml5.commands.insertEmbedVideo = {
+    /**     
+     * @example
+     *    // either ...
+     *    wysihtml5.commands.insertVideo.exec(element, "insertVideo", "http://www.google.de/logo.jpg");
+     *    // ... or ...
+     *    wysihtml5.commands.insertVideo.exec(element, "insertVideo", { src: "http://www.google.de/logo.jpg", width: "400"... });
+     */
+    exec: function(element, command, value) {
+      var code = value.src;
+      value = Object.create({
+                  'src' : wysihtml5.commands.getAttributeValue.exec(code,"src"),
+                  'width': wysihtml5.commands.getAttributeValue.exec(code,"width"),
+                  'height': wysihtml5.commands.getAttributeValue.exec(code,"height")
+              });
+
+      wysihtml5.commands.insertVideo.exec(element, command, value);
+    },
+
+    state: function(element) {
+      wysihtml5.commands.insertVideo.state(element);
+    },
+
+    value: function(element) {
+      wysihtml5.commands.insertVideo.value(element);
+    }
+  };
+})(wysihtml5);
+
+// This function parses a string code with each parameter that it's required
+(function(wysihtml5) {
+  wysihtml5.commands.getAttributeValue = {
+    exec: function (code,attr){
+      return code.substring(parseInt(code.indexOf(attr))+attr.length + 2,code.length).split("\" ")[0];
+    }  
+  };
+})(wysihtml5);
+
 (function(wysihtml5) {
   var undef,
       LINE_BREAK = "<br>" + (wysihtml5.browser.needsSpaceAfterLineBreak() ? " " : "");
@@ -8957,7 +9009,9 @@ wysihtml5.commands = {
       return undef;
     }
   };
-})(wysihtml5);(function(wysihtml5) {
+})(wysihtml5);
+
+(function(wysihtml5) {
   var undef;
   
   wysihtml5.commands.insertOrderedList = {
