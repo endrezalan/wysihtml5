@@ -110,6 +110,10 @@
   text-align: left;
 }
 
+.wysiwyg-table-wide {
+  width: 100%;
+}
+
 .wysiwyg-float-left {
   float: left;
   margin: 0 8px 8px 0;
