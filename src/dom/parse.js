@@ -103,7 +103,8 @@ wysihtml5.dom.parse = (function() {
     // Insert new DOM tree
     element.appendChild(fragment);
     
-    return isString ? wysihtml5.quirks.getCorrectInnerHTML(element) : element;
+   // remove  parser on || off just remove the comment slash-es and the semicolon
+   return elementOrHtml; //  isString ? wysihtml5.quirks.getCorrectInnerHTML(element) : element;//
   }
   
   function _convert(oldNode, cleanUp) {
